@@ -4,6 +4,9 @@ const translate = require('@iamtraction/google-translate');
 require('ejs')
 require('dotenv').config();
 const cookieParser = require('cookie-parser');
+const serverless = require('serverless-http')
+const router = express.Router()
+
 
 const mongoose = require('mongoose')
 mongoose.connect('mongodb://127.0.0.1:27017/store', { useNewUrlParser: true })
@@ -11,6 +14,8 @@ mongoose.set('strictQuery', true)
 
 const {Configuration, OpenAIApi} = require('openai');
 const app = express()
+
+
 app.set('view engine', 'ejs')
 app.use(express.static('public'))
 app.set('views', __dirname + '/views')
@@ -99,4 +104,6 @@ app.post("/open", async (req,res)=> {
 
 
 
+app.use('./netlify/functions/api',router);
+module.exports.handler = serverless(app)
 
