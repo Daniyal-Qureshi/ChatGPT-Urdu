@@ -88,3 +88,8 @@ app.post("/open", async (req,res)=> {
     res.render('index' , {responses: responses, set: 'key' in req.cookies, error: e.response.data.error.message })
   }
 })
+
+app.get("/home", (req,res) => {
+  res.send("Hello world")
+
+})
