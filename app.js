@@ -34,32 +34,28 @@ var configuration = new Configuration({
 var openai = new OpenAIApi(configuration)
 
 app.get("/",async(req,res)=>{
-
-  res.render('index' , {responses: responses, set: req.cookies.key ? true : false })
-
-
+  const key_set = 'key' in req.cookies
+  const error = key_set ? "" : "Please provide the API Key"
+  res.render('index' , { responses: responses, set: key_set , error: error })
 })
 
+app.get("/remove",(req, res) => {
+  res.clearCookie("key");
+  res.redirect('/')
+})
 
 app.get("/set/:key", (req,res) => {
-
   process.env.OPEN_AI_KEY = req.params.key;
   configuration = new Configuration({
     apiKey: process.env.OPEN_AI_KEY
-
   })
-
   console.log(configuration)
   openai = new OpenAIApi(configuration)
-
   res.cookie('key', req.params.key);
-  res.send("Done")
+  res.redirect("/")
 })
 
-
 app.post("/open", async (req,res)=> {
-
-
   try {
     if("prompt" in req.body){
       const translated = await translate(req.body.prompt, { to: 'en' })
@@ -81,22 +77,14 @@ app.post("/open", async (req,res)=> {
       responses.push( {
         question: req.body.prompt,
         answer:answer.text.replace(/\n/g, "<br>")
-
       })
-
       console.log(answer.text)
-
-      res.render('index' , {responses: responses, set: req.cookies.key ? true : false })
+      const key_set = 'key' in req.cookies
+      const error = key_set ? "" : "Please provide the API Key"
+      res.render('index' , { responses: responses, set: key_set , error: error })
     }
   }
-
   catch(e) {
-    console.error(e.message)
-
+    res.render('index' , {responses: responses, set: 'key' in req.cookies, error: e.response.data.error.message })
   }
-
 })
-
-
-
-

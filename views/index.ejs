@@ -13,48 +13,31 @@
       crossorigin="anonymous"
     />
     <link href="style.css" rel="stylesheet" />
-
-    <script src="index.js" type="module"></script>
+    <script src="home.js" type="module"></script>
   </head>
-
   <body>
-    <div class="d-flex justify-content-between">
+    <div class="d-flex justify-content-between m-3">
       <div class="w-25">
         <h1 class="mt-2">Urdu ChatGPT</h1>
+        <a class="btn btn-primary fs-5" href="/remove"> Remove API Key </a>
       </div>
       <form method="post" action="/open" class="w-75">
         <div class="d-flex align-items-end m-2" style="min-height: 90vh">
           <div class="w-100 m-3">
             <% responses.map((response) => { %>
-
             <h4 class="mt-2"><%= response.question %></h4>
-            <div
-              class="card border p-2"
-              style="background-color: rgba(247, 247, 248)"
-
-            >
+            <div class="card border p-2" style="background-color: rgba(247, 247, 248)" >
               <h4 class="answer"><%= response.answer %></h4>
             </div>
-
             <% }); %>
-
-            <% if(!set) { %>
-              <div class="alert alert-danger" role="alert">
-                Please Set API Key
+            <% if(error) { %>
+              <div class="alert alert-danger fs-5" role="alert">
+                <%= error %>
               </div>
             <% } %>
-            <textarea
-              name="prompt"
-              class="form-control mt-3"
-              id="target"
-              rows="1"
-              required="true"
-              oninput="this.style.height = ''; this.style.height = this.scrollHeight +'px'"
-            ></textarea>
-
-
-
-            <button type="submit" class="btn btn-primary mt-3">Submit</button>
+            <textarea name="prompt" class="form-control mt-3" id="target" rows="1" required="true"
+            oninput="this.style.height = ''; this.style.height = this.scrollHeight +'px'"></textarea>
+            <button type="submit" class="btn btn-primary mt-3 fs-5">Submit</button>
           </div>
         </div>
       </form>
@@ -68,7 +51,7 @@
     if(!<%=set %>) {
       let API_KEY = prompt("Please Enter your API KEY");
       if (API_KEY != null) {
-        fetch(`set/${API_KEY}`).then(res=> console.log(res))
+        window.location = `set/${API_KEY}`
       }
     }
   </script>
