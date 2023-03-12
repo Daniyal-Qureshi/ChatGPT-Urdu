@@ -90,6 +90,6 @@ app.post("/open", async (req,res)=> {
 })
 
 app.get("/home", (req,res) => {
-  res.send("Hello world")
+  res.json({"hello" : "World"})
 
 })
