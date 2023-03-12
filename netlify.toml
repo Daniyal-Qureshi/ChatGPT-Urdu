@@ -1,0 +1,10 @@
+[build]
+  functions = "functions"
+
+[[redirects]]
+  to="/.netlify/functions/api/:splat"
+  from="/*"
+  status=200
+
+[functions]
+  included_files = ["public/**"]

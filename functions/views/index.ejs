@@ -12,16 +12,16 @@
       integrity="sha384-GLhlTQ8iRABdZLl6O3oVMWSktQOp6b7In1Zl3/Jr59b6EGGoI1aFkw7cmDA6j6gD"
       crossorigin="anonymous"
     />
-    <link href="style.css" rel="stylesheet" />
-    <script src="home.js" type="module"></script>
+    <link href="/public/style.css" rel="stylesheet" />
+    <script src="/public/home.js" type="module"></script>
   </head>
   <body>
     <div class="d-flex justify-content-between m-3">
       <div class="w-25">
         <h1 class="mt-2">Urdu ChatGPT</h1>
-        <a class="btn btn-primary fs-5" href="/remove"> Remove API Key </a>
+        <a class="btn btn-primary fs-5" href="/api/remove"> Remove API Key </a>
       </div>
-      <form method="post" action="/open" class="w-75">
+      <form method="post" action="/api/open" class="w-75">
         <div class="d-flex align-items-end m-2" style="min-height: 90vh">
           <div class="w-100 m-3">
             <% responses.map((response) => { %>
@@ -51,7 +51,7 @@
     if(!<%=set %>) {
       let API_KEY = prompt("Please Enter your API KEY");
       if (API_KEY != null) {
-        window.location = `set/${API_KEY}`
+        window.location = `/api/set/${API_KEY}`
       }
     }
   </script>

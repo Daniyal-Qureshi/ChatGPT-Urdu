@@ -4,10 +4,12 @@ const translate = require('@iamtraction/google-translate');
 require('ejs')
 require('dotenv').config();
 const cookieParser = require('cookie-parser');
+const serverless = require('serverless-http')
+const router = express.Router()
 
-const mongoose = require('mongoose')
-mongoose.connect('mongodb://127.0.0.1:27017/store', { useNewUrlParser: true })
-mongoose.set('strictQuery', true)
+// const mongoose = require('mongoose')
+// mongoose.connect('mongodb://127.0.0.1:27017/store', { useNewUrlParser: true })
+// mongoose.set('strictQuery', true)
 
 const {Configuration, OpenAIApi} = require('openai');
 const app = express()
@@ -23,7 +25,6 @@ var KEY = ""
 
 const responses = []
 
-app.listen(PORT, ()=> "Listening")
 
 
 var configuration = new Configuration({
@@ -33,18 +34,18 @@ var configuration = new Configuration({
 
 var openai = new OpenAIApi(configuration)
 
-app.get("/",async(req,res)=>{
+router.get("/",async(req,res)=>{
   const key_set = 'key' in req.cookies
   const error = key_set ? "" : "Please provide the API Key"
   res.render('index' , { responses: responses, set: key_set , error: error })
 })
 
-app.get("/remove",(req, res) => {
+router.get("/api/remove",(req, res) => {
   res.clearCookie("key");
   res.redirect('/')
 })
 
-app.get("/set/:key", (req,res) => {
+router.get("/api/set/:key", (req,res) => {
   process.env.OPEN_AI_KEY = req.params.key;
   configuration = new Configuration({
     apiKey: process.env.OPEN_AI_KEY
@@ -55,7 +56,7 @@ app.get("/set/:key", (req,res) => {
   res.redirect("/")
 })
 
-app.post("/open", async (req,res)=> {
+router.post("/api/open", async (req,res)=> {
   try {
     if("prompt" in req.body){
       const translated = await translate(req.body.prompt, { to: 'en' })
@@ -89,7 +90,7 @@ app.post("/open", async (req,res)=> {
   }
 })
 
-app.get("/home", (req,res) => {
-  res.json({"hello" : "World"})
 
-})
+app.use('/',router);
+
+module.exports.handler = serverless(app)
