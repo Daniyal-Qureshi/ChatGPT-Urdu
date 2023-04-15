@@ -1,6 +1,5 @@
 import { ShiftKeysMapping, KeysMapping } from "./keys.js";
 
-
 $(document).ready(function () {
   $("#target").keypress(function (event) {
     if (event.key == "Enter") {
@@ -28,4 +27,3 @@ $(document).ready(function () {
     event.preventDefault();
   });
 });
-
