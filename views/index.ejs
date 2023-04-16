@@ -43,14 +43,13 @@
   </form>
 </div>
 <script>
-  let elements = document.getElementsByClassName('answer')
-  for(let element of elements)
-    element.innerHTML = element.innerText
+  let elements = document.getElementsByClassName("answer");
+  for (let element of elements) element.innerHTML = element.innerText;
 
-  if(!<%=set %>) {
+  if ("<%= error %>" == "Please provide the API Key") {
     let API_KEY = prompt("Please Enter your API KEY");
-    if (API_KEY != null) {
-      window.location = `/set/${API_KEY}`
+    if (API_KEY) {
+      window.location = `/set/${API_KEY}`;
     }
   }
 </script>

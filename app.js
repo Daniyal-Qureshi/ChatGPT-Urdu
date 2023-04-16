@@ -22,19 +22,34 @@ app.use(cookieParser());
 
 const PORT = process.env.PORT || 5000;
 
-var configuration = new Configuration({
-  apiKey: process.env.OPEN_AI_KEY,
-});
+var openai = "";
+var apiKey = "";
 
-var openai = new OpenAIApi(configuration);
+function checkAPIKey(req, res, next) {
+  const responses = req.cookies.responses ? req.cookies.responses : [];
+  if (responses.length == 0) {
+    res.cookie("responses", responses);
+  }
 
-app.get("/", async (req, res) => {
-  const key_set = "key" in req.cookies;
-  const error = key_set ? "" : "Please provide the API Key";
+  if (req.cookies.key) {
+    apiKey = req.cookies.key;
+    const configuration = new Configuration({
+      apiKey: apiKey,
+    });
+    openai = new OpenAIApi(configuration);
+    next();
+  } else {
+    res.render("index", {
+      responses: responses,
+      error: "Please provide the API Key",
+    });
+  }
+}
+
+app.get("/", checkAPIKey, async (req, res) => {
   res.render("index", {
-    responses: req.cookies.responses ? req.cookies.responses : [],
-    set: key_set,
-    error: error,
+    responses: req.cookies.responses,
+    error: "",
   });
 });
 
@@ -44,17 +59,16 @@ app.get("/remove", (req, res) => {
 });
 
 app.get("/set/:key", (req, res) => {
-  process.env.OPEN_AI_KEY = req.params.key;
+  apiKey = req.params.key;
   configuration = new Configuration({
-    apiKey: process.env.OPEN_AI_KEY,
+    apiKey: apiKey,
   });
-  console.log(configuration);
   openai = new OpenAIApi(configuration);
   res.cookie("key", req.params.key);
   res.redirect("/");
 });
 
-app.post("/open", async (req, res) => {
+app.post("/open", checkAPIKey, async (req, res) => {
   try {
     if ("prompt" in req.body) {
       const translated = await translate(req.body.prompt, { to: "en" });
@@ -74,7 +88,7 @@ app.post("/open", async (req, res) => {
       const answer = await translate(response.data.choices[0].text, {
         to: "ur",
       });
-      const responses = req.cookies.responses ? req.cookies.responses : [];
+      const responses = req.cookies.responses;
 
       responses.push({
         question: req.body.prompt,
@@ -83,20 +97,15 @@ app.post("/open", async (req, res) => {
 
       res.cookie("responses", responses);
 
-      console.log(answer.text);
-      const key_set = "key" in req.cookies;
-      const error = key_set ? "" : "Please provide the API Key";
       res.render("index", {
         responses: responses,
-        set: key_set,
-        error: error,
+        error: "",
       });
     }
   } catch (e) {
     console.log(e);
     res.render("index", {
-      responses: req.cookies.responses ? req.cookies.responses : [],
-      set: "key" in req.cookies,
+      responses: req.cookies.responses,
       error: e.response.data.error.message,
     });
   }
