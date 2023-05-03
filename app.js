@@ -30,7 +30,7 @@ function checkAPIKey(req, res, next) {
   if (responses.length == 0) {
     res.cookie("responses", responses);
   }
-
+  console.log(responses);
   if (req.cookies.key) {
     apiKey = req.cookies.key;
     const configuration = new Configuration({
@@ -39,7 +39,7 @@ function checkAPIKey(req, res, next) {
     openai = new OpenAIApi(configuration);
     next();
   } else {
-    res.render("index", {
+    res.render("response", {
       responses: responses,
       error: "Please provide the API Key",
     });
@@ -47,7 +47,7 @@ function checkAPIKey(req, res, next) {
 }
 
 app.get("/", checkAPIKey, async (req, res) => {
-  res.render("index", {
+  res.render("response", {
     responses: req.cookies.responses,
     error: "",
   });
@@ -97,14 +97,14 @@ app.post("/open", checkAPIKey, async (req, res) => {
 
       res.cookie("responses", responses);
 
-      res.render("index", {
+      res.render("response", {
         responses: responses,
         error: "",
       });
     }
   } catch (e) {
     console.log(e);
-    res.render("index", {
+    res.render("response", {
       responses: req.cookies.responses,
       error: e.response.data.error.message,
     });
@@ -125,4 +125,9 @@ app.get("/test/:text", async (req, res) => {
   });
   res.send(response.data.choices[0].text);
 });
+
+app.get("/reset", (req, res) => {
+  res.render("response");
+});
+
 app.listen(PORT, () => console.log(`Listening on ${PORT}`));
