@@ -1,7 +1,7 @@
 export const KeysMapping = {
   A: "ا",
   B: "ب",
-  C: "س",
+  C: "چ",
   D: "د",
   E: "ع",
   F: "ف",
@@ -65,5 +65,5 @@ export const ShiftKeysMapping = {
   W: "ﷺ",
   X: "ژ",
   Y: "؁",
-  Z: "ژ",
+  Z: "ذ",
 };

@@ -1,4 +1,5 @@
-import { ShiftKeysMapping, KeysMapping } from "./keys.js";
+import { ShiftKeysMapping } from "./keys.js";
+import { KeysMapping } from "./keys.js";
 
 $(document).ready(function () {
   $("#target").keypress(function (event) {
