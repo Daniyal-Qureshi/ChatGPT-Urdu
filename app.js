@@ -53,6 +53,7 @@ function checkAPIKey(req, res, next) {
     res.render("response", {
       responses: responses,
       error: "Please provide the API Key",
+      data: jsonData,
     });
   }
 }
@@ -119,10 +120,11 @@ app.post("/open", checkAPIKey, async (req, res) => {
       });
     }
   } catch (e) {
-    console.log(e);
+    console.log(e.response.data.error);
+    const error = e.response.data.error.message || e.response.data.error.code;
     res.render("response", {
       responses: req.cookies.responses,
-      error: e.response.data.error.message,
+      error:error,
       data: jsonData,
     });
   }

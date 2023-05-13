@@ -8317,7 +8317,7 @@ h4 {
 .scrollable-content {
   -ms-overflow-style: none; 
   scrollbar-width: none; 
-  height: 70vh;
+  height: 65vh;
   overflow-y: scroll;
   scrollbar-width: none;
 }
@@ -8330,9 +8330,19 @@ td {
 
 
 .table-responsive{
-  max-height: 65vh;
+  max-height: 60vh;
 }
 
 .table-responsive::-webkit-scrollbar{
   display: none;
+}
+
+@media only screen and (max-height: 768px) {
+  .scrollable-content {
+    height: 57vh !important;
+  }
+
+  .table-responsive {
+    max-height: 50vh !important;
+  }
 }
