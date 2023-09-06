@@ -4,7 +4,6 @@ const translate = require("@iamtraction/google-translate");
 require("ejs");
 require("dotenv").config();
 const cookieParser = require("cookie-parser");
-
 // const mongoose = require('mongoose')
 // mongoose.connect('mongodb://127.0.0.1:27017/store', { useNewUrlParser: true })
 // mongoose.set('strictQuery', true)
@@ -21,16 +20,28 @@ app.use(bodyParser.urlencoded({ extended: false }));
 app.use(cookieParser());
 
 const PORT = process.env.PORT || 5000;
+const expire_date = new Date(Date.now() + 1000 * 60 * 60 * 24 * 365 * 10);
+const fs = require("fs");
 
 var openai = "";
 var apiKey = "";
+
+const filePath = path.join(__dirname, "public", "keys.json");
+var jsonData = [];
+fs.readFile(filePath, "utf-8", (err, data) => {
+  if (err) {
+    console.error(err);
+    return;
+  }
+  jsonData = JSON.parse(data);
+});
 
 function checkAPIKey(req, res, next) {
   const responses = req.cookies.responses ? req.cookies.responses : [];
   if (responses.length == 0) {
     res.cookie("responses", responses);
   }
-
+  console.log(responses);
   if (req.cookies.key) {
     apiKey = req.cookies.key;
     const configuration = new Configuration({
@@ -39,17 +50,19 @@ function checkAPIKey(req, res, next) {
     openai = new OpenAIApi(configuration);
     next();
   } else {
-    res.render("index", {
+    res.render("response", {
       responses: responses,
       error: "Please provide the API Key",
+      data: jsonData,
     });
   }
 }
 
 app.get("/", checkAPIKey, async (req, res) => {
-  res.render("index", {
+  res.render("response", {
     responses: req.cookies.responses,
     error: "",
+    data: jsonData,
   });
 });
 
@@ -64,7 +77,7 @@ app.get("/set/:key", (req, res) => {
     apiKey: apiKey,
   });
   openai = new OpenAIApi(configuration);
-  res.cookie("key", req.params.key);
+  res.cookie("key", req.params.key, { expires: expire_date, httpOnly: true });
   res.redirect("/");
 });
 
@@ -95,18 +108,24 @@ app.post("/open", checkAPIKey, async (req, res) => {
         answer: answer.text.replace(/\n/g, "<br>"),
       });
 
-      res.cookie("responses", responses);
+      res.cookie("responses", responses, {
+        expires: expire_date,
+        httpOnly: true,
+      });
 
-      res.render("index", {
+      res.render("response", {
         responses: responses,
         error: "",
+        data: jsonData,
       });
     }
   } catch (e) {
-    console.log(e);
-    res.render("index", {
+    console.log(e.response.data.error);
+    const error = e.response.data.error.message || e.response.data.error.code;
+    res.render("response", {
       responses: req.cookies.responses,
-      error: e.response.data.error.message,
+      error:error,
+      data: jsonData,
     });
   }
 });
@@ -125,4 +144,9 @@ app.get("/test/:text", async (req, res) => {
   });
   res.send(response.data.choices[0].text);
 });
+
+app.get("/reset", (req, res) => {
+  res.render("response");
+});
+
 app.listen(PORT, () => console.log(`Listening on ${PORT}`));

@@ -1,0 +1,36 @@
+<nav id="sidebar">
+  <div class="d-flex align-items-center flex-column">
+    <h2 class="mt-2 text-white">Urdu GPT</h2>
+    <a class="btn btn-primary fs-5" href="/remove"> Remove API Key </a>
+  </div>
+  <div class="p-4 pt-5">
+    <ul class="list-unstyled components mb-5">
+      <a href="#" class="demo">Demo</a>
+    </ul>
+    <div class="table-responsive">
+      <table class="table" style="color: white">
+        <thead>
+          <tr>
+            <th scope="col">English</th>
+            <th scope="col">Urdu</th>
+            <th scope="col">Urdu (Shift+ Key)</th>
+          </tr>
+        </thead>
+
+        <tbody class="w-100">
+          <% Object.keys(data["keys"]).map((item) => { %>
+          <tr>
+            <td><%= item%></td>
+            <td><%= data["keys"][item] %></td>
+            <td><%= data["shift_keys"][item] %></td>
+          </tr>
+
+          <% }) %>
+        </tbody>
+      </table>
+    </div>
+    <div class="footer">
+      <p>Contact me at daniyalqureshi.cs@gmail.com</p>
+    </div>
+  </div>
+</nav>
