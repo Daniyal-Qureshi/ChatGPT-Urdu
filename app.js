@@ -1,27 +1,24 @@
 const express = require("express");
 const bodyParser = require("body-parser");
 const translate = require("@iamtraction/google-translate");
-require("ejs");
-require("dotenv").config();
 const cookieParser = require("cookie-parser");
-// const mongoose = require('mongoose')
-// mongoose.connect('mongodb://127.0.0.1:27017/store', { useNewUrlParser: true })
-// mongoose.set('strictQuery', true)
-
 const { Configuration, OpenAIApi } = require("openai");
 const app = express();
-app.set("view engine", "ejs");
-
 const path = require("path");
+const PORT = process.env.PORT || 5000;
+const expire_date = new Date(Date.now() + 1000 * 60 * 60 * 24 * 365 * 10);
+const fs = require("fs");
+
+
+require("ejs");
+require("dotenv").config();
+app.set("view engine", "ejs");
 app.use(express.static(path.join(__dirname, "public")));
 app.set("views", __dirname + "/views");
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(cookieParser());
 
-const PORT = process.env.PORT || 5000;
-const expire_date = new Date(Date.now() + 1000 * 60 * 60 * 24 * 365 * 10);
-const fs = require("fs");
 
 var openai = "";
 var apiKey = "";
@@ -41,7 +38,6 @@ function checkAPIKey(req, res, next) {
   if (responses.length == 0) {
     res.cookie("responses", responses);
   }
-  console.log(responses);
   if (req.cookies.key) {
     apiKey = req.cookies.key;
     const configuration = new Configuration({
@@ -120,7 +116,6 @@ app.post("/open", checkAPIKey, async (req, res) => {
       });
     }
   } catch (e) {
-    console.log(e.response.data.error);
     const error = e.response.data.error.message || e.response.data.error.code;
     res.render("response", {
       responses: req.cookies.responses,
