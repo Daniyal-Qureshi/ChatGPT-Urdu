@@ -52,7 +52,7 @@ function checkAPIKey(req, res, next) {
   }
 
   else {
-    res.render("response", {
+    res.render("home", {
       responses: responses,
       error: "Please provide the API Key",
       data: jsonData,
@@ -61,7 +61,7 @@ function checkAPIKey(req, res, next) {
 }
 
 app.get("/", checkAPIKey, async (req, res) => {
-  res.render("response", {
+  res.render("home", {
     responses: req.cookies.responses,
     error: "",
     data: jsonData,
@@ -115,7 +115,7 @@ app.post("/open", checkAPIKey, async (req, res) => {
         httpOnly: true,
       });
 
-      res.render("response", {
+      res.render("home", {
         responses: responses,
         error: "",
         data: jsonData,
@@ -123,7 +123,7 @@ app.post("/open", checkAPIKey, async (req, res) => {
     }
   } catch (e) {
     const error = e.response.data.error.message || e.response.data.error.code;
-    res.render("response", {
+    res.render("home", {
       responses: req.cookies.responses,
       error:error,
       data: jsonData,
