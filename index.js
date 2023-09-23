@@ -7,8 +7,7 @@ const app = express();
 const path = require("path");
 const PORT = process.env.PORT || 5000;
 const expire_date = new Date(Date.now() + 1000 * 60 * 60 * 24 * 365 * 10);
-const fs = require("fs");
-
+const fs = require('fs').promises;
 
 require("ejs");
 require("dotenv").config();
@@ -25,19 +24,24 @@ var apiKey = "";
 
 const filePath = path.join(__dirname, "public", "keys.json");
 var jsonData = [];
-fs.readFile(filePath, "utf-8", (err, data) => {
-  if (err) {
+
+async function readJsonFile() {
+  try {
+    const d = await fs.readFile(filePath, 'utf-8');
+    jsonData = JSON.parse(d);
+  } catch (err) {
     console.error(err);
-    return;
   }
-  jsonData = JSON.parse(data);
-});
+}
+
+readJsonFile()
 
 function checkAPIKey(req, res, next) {
   const responses = req.cookies.responses ? req.cookies.responses : [];
   if (responses.length == 0) {
     res.cookie("responses", responses);
   }
+
   if (req.cookies.key) {
     apiKey = req.cookies.key;
     const configuration = new Configuration({
@@ -45,7 +49,9 @@ function checkAPIKey(req, res, next) {
     });
     openai = new OpenAIApi(configuration);
     next();
-  } else {
+  }
+
+  else {
     res.render("response", {
       responses: responses,
       error: "Please provide the API Key",

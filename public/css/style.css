@@ -8288,20 +8288,6 @@ a[data-toggle="collapse"] {
   color: rgba(255, 255, 255, 0.5); }
 
 
-@font-face {
-  font-family: urdu;
-  src: url(urdu.ttf);
-}
-
-#target {
-  max-height: 300px;
-  font-size: 20px;
-  font-family: urdu;
-  box-shadow: 0 0 5px rgba(0, 0, 0, 0.3);
-  height: 30px !important;
-
-}
-
 h4 {
   font-family: urdu !important;
 }
@@ -8315,8 +8301,8 @@ h4 {
 }
 
 .scrollable-content {
-  -ms-overflow-style: none; 
-  scrollbar-width: none; 
+  -ms-overflow-style: none;
+  scrollbar-width: none;
   height: 65vh;
   overflow-y: scroll;
   scrollbar-width: none;
