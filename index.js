@@ -131,23 +131,5 @@ app.post("/open", checkAPIKey, async (req, res) => {
   }
 });
 
-app.get("/test/:text", async (req, res) => {
-  const prompt = req.params.text + "{}";
-  const response = await openai.createCompletion({
-    model: "text-davinci-003",
-    prompt: prompt,
-    max_tokens: 4000,
-    temperature: 0.0,
-    top_p: 0.0,
-    frequency_penalty: 0.0,
-    presence_penalty: 1.0,
-    stop: ["{}"],
-  });
-  res.send(response.data.choices[0].text);
-});
-
-app.get("/reset", (req, res) => {
-  res.render("response");
-});
 
 app.listen(PORT, () => console.log(`Listening on ${PORT}`));
