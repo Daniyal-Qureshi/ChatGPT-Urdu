@@ -8289,7 +8289,7 @@ a[data-toggle="collapse"] {
 
 
 h4 {
-  font-family: urdu !important;
+  font-family: 'Noto Nastaliq Urdu' !important;
 }
 
 .form-height {
@@ -8308,7 +8308,7 @@ h4 {
   scrollbar-width: none;
 }
 tr {
-  font-family: urdu;
+  font-family: 'Noto Nastaliq Urdu';
 }
 td {
   font-size: 25px;
