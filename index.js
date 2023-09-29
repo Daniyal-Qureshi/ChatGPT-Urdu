@@ -10,7 +10,6 @@ const expire_date = new Date(Date.now() + 1000 * 60 * 60 * 24 * 365 * 10);
 const fs = require('fs').promises;
 
 require("ejs");
-require("dotenv").config();
 app.set("view engine", "ejs");
 app.use(express.static(path.join(__dirname, "public")));
 app.set("views", __dirname + "/views");
